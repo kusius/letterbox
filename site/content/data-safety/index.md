@@ -7,7 +7,7 @@ menu: main
 
 # Account and Data Deletion
 
-Letterbox allows users to sign in using Google Sign-In to access their Gmail account.
+Letterbox allows users to sign in using Google Sign-In to access their Gmail account and emails.
 
 ## How to delete your account
 
