@@ -1,0 +1,7 @@
+[*.{kt,kts}]
+ktlint_experimental = enabled
+
+# enable all rules from compose-rules
+ktlint_compose = enabled
+
+ktlint_standard_function-naming = disabled

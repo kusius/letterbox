@@ -1,0 +1,13 @@
+CREATE TABLE HistoryEntity (
+    last_history_id INTEGER PRIMARY KEY NOT NULL
+);
+
+getLastHistoryId:
+SELECT *
+FROM HistoryEntity
+ORDER BY last_history_id DESC
+LIMIT 1;
+
+insertHistoryEntity:
+INSERT OR REPLACE INTO HistoryEntity
+VALUES ?;

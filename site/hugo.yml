@@ -1,0 +1,24 @@
+baseURL: https://www.kusius.github.io/letterbox
+languageCode: 'en-us'
+title: 'Letterbox'
+theme: ["PaperMod"]
+params:
+  profileMode:
+    enabled: true
+    title: "Letterbox" # optional default will be site title
+    subtitle: "Your mail."
+#    imageUrl: "<image link>" # optional
+#    imageTitle: "<title of image as alt>" # optional
+#    imageWidth: 120 # custom size
+#    imageHeight: 120 # custom size
+    buttons:
+#      - name: Archive
+#        url: "/archive"
+#      - name: Github
+#        url: "https://github.com/"
+
+  socialIcons: # optional
+    - name: "github"
+      url: "https://github.com/kusius"
+#    - name: "<platform 2>"
+#      url: "<link2>"
