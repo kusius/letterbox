@@ -52,6 +52,7 @@ import io.kusius.letterbox.model.MailPart
 import io.kusius.letterbox.model.MailPartBody
 import io.kusius.letterbox.model.MailSummary.Companion.randomMailSummary
 import io.kusius.letterbox.model.MimeTypes
+import io.kusius.letterbox.ui.NavigationRoute
 import io.kusius.letterbox.ui.common.MailItem
 import io.kusius.letterbox.ui.common.cardstack.lazy.LazyCardStack
 import io.kusius.letterbox.ui.common.cardstack.lazy.itemsIndexed
@@ -61,11 +62,14 @@ import io.kusius.letterbox.ui.common.swipeablecard.SwipeableCard
 import io.kusius.letterbox.ui.theme.AppTheme
 import kotlinx.serialization.Serializable
 import letterbox.composeapp.generated.resources.Res
+import letterbox.composeapp.generated.resources.writing
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
-object LetterboxRoute
+object LetterboxRoute : NavigationRoute {
+    override fun IconContent() = Res.drawable.writing
+}
 
 @Composable
 fun LetterboxScreenRoot(
