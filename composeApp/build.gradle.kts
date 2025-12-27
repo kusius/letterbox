@@ -14,7 +14,6 @@ fun String.toVersionCode(): Int {
     return major * 10000 + minor * 100 + patch
 }
 
-// Load local.properties
 val localProperties =
     Properties().apply {
         val localPropertiesFile = rootProject.file("local.properties")
