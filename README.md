@@ -10,3 +10,5 @@
 [Letter icons created by Freepik - Flaticon](https://www.flaticon.com/free-icons/letter)
 
 [Contact book icons created by Soremba - Flaticon](https://www.flaticon.com/free-icons/contact-book)
+
+<a href="https://www.flaticon.com/free-icons/soccer" title="soccer icons">Soccer icons created by andinur - Flaticon</a>

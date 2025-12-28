@@ -62,13 +62,13 @@ import io.kusius.letterbox.ui.common.swipeablecard.SwipeableCard
 import io.kusius.letterbox.ui.theme.AppTheme
 import kotlinx.serialization.Serializable
 import letterbox.composeapp.generated.resources.Res
-import letterbox.composeapp.generated.resources.writing
+import letterbox.composeapp.generated.resources.cards
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
 object LetterboxRoute : NavigationRoute {
-    override fun IconContent() = Res.drawable.writing
+    override fun IconContent() = Res.drawable.cards
 }
 
 @Composable
