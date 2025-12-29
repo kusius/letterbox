@@ -68,7 +68,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
 object LetterboxRoute : NavigationRoute {
-    override fun IconContent() = Res.drawable.cards
+    override val drawable = Res.drawable.cards
 }
 
 @Composable

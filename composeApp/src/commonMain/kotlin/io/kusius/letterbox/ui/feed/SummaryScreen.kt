@@ -30,7 +30,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
 object SummaryRoute : NavigationRoute {
-    override fun IconContent() = Res.drawable.mail_list
+    override val drawable = Res.drawable.mail_list
 }
 
 @Composable
