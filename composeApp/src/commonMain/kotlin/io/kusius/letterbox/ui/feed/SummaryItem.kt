@@ -15,12 +15,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults.iconToggleButtonColors
+import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
@@ -28,25 +33,27 @@ import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import io.github.aakira.napier.Napier
 import io.kusius.letterbox.model.MailSummary
 import io.kusius.letterbox.ui.theme.AppTheme
 import letterbox.composeapp.generated.resources.Res
-import letterbox.composeapp.generated.resources.mark_archive
-import letterbox.composeapp.generated.resources.mark_read
-import letterbox.composeapp.generated.resources.mark_unread
 import letterbox.composeapp.generated.resources.person
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -84,7 +91,10 @@ internal fun SummaryItem(
     onEndToStartSwipe: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val localDensity = LocalDensity.current
+    val threshold =
+        with(LocalWindowInfo.current) {
+            (containerSize.width * 0.7f).dp.value
+        }
 
     val state =
         rememberSwipeToDismissBoxState(
@@ -94,21 +104,24 @@ internal fun SummaryItem(
                 } else if (it == SwipeToDismissBoxValue.EndToStart) {
                     onEndToStartSwipe()
                 }
-                // reset item when toggling done status
+                // Do not dismiss when StartToEnd swiping
                 it != SwipeToDismissBoxValue.StartToEnd
             },
-            positionalThreshold = {
-                with(localDensity) { 112.dp.toPx() }
-            },
+            positionalThreshold = { threshold },
         )
     val haptics = LocalHapticFeedback.current
-
+    val iconColor = AppTheme.colorScheme().onBackground
     val fontWeight =
         if (item.isRead) {
             FontWeight.Normal
         } else {
             FontWeight.ExtraBold
         }
+    val iconColorFilter =
+        ColorFilter.tint(
+            iconColor,
+            BlendMode.SrcAtop,
+        )
 
     // Provide haptic once user reaches threshold for swipe action to execute
     LaunchedEffect(state.targetValue) {
@@ -116,6 +129,7 @@ internal fun SummaryItem(
             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
         }
     }
+
     SwipeToDismissBox(
         state = state,
         backgroundContent = {
@@ -162,12 +176,24 @@ internal fun SummaryItem(
                             horizontalArrangement = Arrangement.End,
                             modifier = Modifier.fillMaxSize().padding(backgroundContentPadding),
                         ) {
-                            Icon(
-                                painter = painterResource(Res.drawable.mark_archive),
-                                tint = AppTheme.colorScheme().onErrorContainer,
-                                contentDescription = null,
-                                modifier = Modifier.scale(animatedScale),
-                            )
+                            IconToggleButton(
+                                checked = false,
+                                onCheckedChange = {},
+                                colors =
+                                    iconToggleButtonColors(
+                                        checkedContainerColor = AppTheme.colorScheme().errorContainer,
+                                        checkedContentColor = AppTheme.colorScheme().onErrorContainer,
+                                    ),
+                            ) {
+                                AsyncImage(
+                                    model = Res.getUri("drawable/mark_archive.svg"),
+                                    contentDescription = null,
+                                    modifier =
+                                        Modifier
+                                            .graphicsLayer { colorFilter = iconColorFilter }
+                                            .scale(animatedScale),
+                                )
+                            }
                         }
                     }
                 }
@@ -217,7 +243,7 @@ internal fun SummaryItem(
 }
 
 @Composable
-@Preview()
+@Preview
 private fun PreviewMainSummaryItem() {
     AppTheme {
         SummaryItem(

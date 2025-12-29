@@ -26,3 +26,4 @@ composeApp/src/desktopMain/composeResources/files/credentials.json
 composeApp/google-services.json
 *.aab
 *.apk
+*PR_NOTES.*

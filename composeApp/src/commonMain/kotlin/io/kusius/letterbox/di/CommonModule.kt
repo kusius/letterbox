@@ -7,6 +7,7 @@ import io.kusius.letterbox.data.stores.FullMailsStore
 import io.kusius.letterbox.data.stores.MailStore
 import io.kusius.letterbox.data.stores.MailsStore
 import io.kusius.letterbox.domain.MailDataSource
+import io.kusius.letterbox.ui.RouteRegistry
 import io.kusius.letterbox.ui.feed.SummaryScreenViewModel
 import io.kusius.letterbox.ui.letterbox.LetterboxViewModel
 import io.kusius.letterbox.ui.mail.MailScreenViewModel
@@ -27,6 +28,8 @@ val commonModule =
         single {
             MailsStore()
         }
+
+        single { RouteRegistry() }
 
         single { FullMailsStore() }
 
