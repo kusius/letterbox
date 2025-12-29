@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -17,13 +18,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.kusius.letterbox.model.MailSummary.Companion.randomMailSummary
+import io.kusius.letterbox.ui.NavigationRoute
 import io.kusius.letterbox.ui.theme.AppTheme
 import kotlinx.serialization.Serializable
+import letterbox.composeapp.generated.resources.Res
+import letterbox.composeapp.generated.resources.mail_list
+import letterbox.composeapp.generated.resources.person
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
-object SummaryRoute
+object SummaryRoute : NavigationRoute {
+    override val drawable = Res.drawable.mail_list
+}
 
 @Composable
 fun SummaryScreenRoot(

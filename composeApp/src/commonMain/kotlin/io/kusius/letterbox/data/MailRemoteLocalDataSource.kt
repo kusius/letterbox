@@ -37,7 +37,7 @@ class MailRemoteLocalDataSource(
 
     override suspend fun getEmails(page: Int): Flow<Result<List<MailSummary>>> =
         multiMailStore
-            .stream<Boolean>(StoreReadRequest.cached(key = "", refresh = true))
+            .stream<Boolean>(StoreReadRequest.cached(key = "", refresh = false))
             .mapNotNull { response ->
                 when (response) {
                     is StoreReadResponse.Data<List<MailsAction<MailSummary>>> -> {
