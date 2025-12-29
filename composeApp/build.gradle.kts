@@ -244,9 +244,15 @@ android {
         }
     }
     buildTypes {
+        getByName("debug") {
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-DEBUG"
+            resValue("string", "app_name", "Letterbox.dev")
+        }
         getByName("release") {
             isMinifyEnabled = false
             signingConfig = signingConfigs.getByName("release")
+            resValue("string", "app_name", "Letterbox")
         }
     }
     compileOptions {
