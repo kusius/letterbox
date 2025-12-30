@@ -3,6 +3,7 @@ package io.kusius.letterbox.ui.common
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +21,6 @@ import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.WebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
-import io.github.aakira.napier.Napier
 import io.kusius.letterbox.model.Mail
 import io.kusius.letterbox.model.MailPart
 import io.kusius.letterbox.model.MailPartBody
@@ -178,21 +178,29 @@ internal fun HtmlMail(
 
         val bgColor = MaterialTheme.colorScheme.background
 
-        WebView(
-            state = state,
-            navigator = navigator,
-            captureBackPresses = false,
-            onCreated = { webView: NativeWebView ->
-                configureNativeWebview(webView, bgColor)
-            },
-            modifier = modifier
-                .fillMaxSize()
-                .clipToBounds()
-        )
+        LazyColumn(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            userScrollEnabled = true,
+            modifier = modifier.fillMaxSize(),
+        ) {
+            item {
+                WebView(
+                    state = state,
+                    navigator = navigator,
+                    captureBackPresses = false,
+                    onCreated = { webView: NativeWebView ->
+                        configureNativeWebview(webView, bgColor)
+                    },
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .clipToBounds(),
+                )
+            }
+        }
     }
 }
-
-
 
 expect fun configureNativeWebview(
     webView: NativeWebView,

@@ -117,7 +117,7 @@ fun Modifier.scrollableSwipe(
         )
 }
 
-private fun getSwipeDirection(
+internal fun getSwipeDirection(
     offset: Offset,
     threshold: Offset,
 ): CardSwipeDirection? {
