@@ -3,8 +3,6 @@ package io.kusius.letterbox.ui.common
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.unit.dp
 import com.multiplatform.webview.request.RequestInterceptor
 import com.multiplatform.webview.request.WebRequest
 import com.multiplatform.webview.request.WebRequestInterceptResult
@@ -196,9 +193,8 @@ internal fun HtmlMail(
                         configureNativeWebview(webView, bgColor)
                     },
                     modifier =
-                        modifier
-                            .fillMaxWidth()
-                            .height(800.dp)
+                        Modifier
+                            .fillMaxSize()
                             .clipToBounds(),
                 )
             }
