@@ -55,7 +55,7 @@ jobs:
                 echo "Tag $TAG already exists, skipping"
               else
                 git tag "$TAG"
-                git push origin "$TAG"
+                git push https://x-access-token:${{ secrets.CI_PAT }}@github.com/${{ github.repository }} "$TAG"
                 echo "Created and pushed tag $TAG"
               fi
             fi
