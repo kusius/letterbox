@@ -8,20 +8,32 @@ on:
 jobs:
   tag_release:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history so previous commits exist
 
       - name: Set up Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Get new commits in push
+      - name: Get all commits in this push
         id: commits
         run: |
-          # Get all commits in this push (from previous ref to head)
-          COMMITS=$(git log ${{ github.event.before }}..${{ github.sha }} --pretty=format:%B)
+          # Get the previous commit SHA and current HEAD
+          BEFORE_SHA=${{ github.event.before }}
+          HEAD_SHA=${{ github.sha }}
+          
+          # If this is the first push, git log might fail
+          if [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            COMMITS=$(git log $HEAD_SHA --pretty=format:%B)
+          else
+            COMMITS=$(git log $BEFORE_SHA..$HEAD_SHA --pretty=format:%B)
+          fi
+
           echo "$COMMITS" > commits.txt
           echo "COMMIT_LIST<<EOF" >> $GITHUB_ENV
           cat commits.txt >> $GITHUB_ENV
@@ -34,7 +46,8 @@ jobs:
               VERSION="${BASH_REMATCH[1]}"
               PLATFORM="${BASH_REMATCH[2]}"
               TAG="v$VERSION-$PLATFORM"
-              # Check if tag already exists
+              
+              # Check if tag exists
               if git rev-parse "$TAG" >/dev/null 2>&1; then
                 echo "Tag $TAG already exists, skipping"
               else
