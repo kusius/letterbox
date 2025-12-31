@@ -20,10 +20,13 @@ private fun createDataStore(): DataStore<Preferences> =
                     directory = NSDocumentDirectory,
                     inDomain = NSUserDomainMask,
                     appropriateForURL = null,
-                    create = false,
+                    create = true,
                     error = null,
                 )
-            requireNotNull(documentDirectory).path + DATA_STORE_FILE_NAME
+
+            requireNotNull(documentDirectory)
+                .URLByAppendingPathComponent(DATA_STORE_FILE_NAME, false)!!
+                .path!!
         },
     )
 
