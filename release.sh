@@ -22,12 +22,30 @@ info() {
   echo -e "${YELLOW}→ $1${NC}"
 }
 
+DEBUG=false
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -d|--debug)
+      DEBUG=true
+      shift
+      ;;
+    android|ios|desktop)
+      PLATFORM="$1"
+      shift
+      ;;
+    *)
+      error_exit "Invalid argument: $1. Usage: ./release.sh [-d] [android|ios|desktop]"
+      ;;
+  esac
+done
+
 # Validate platform argument
-if [[ -z "$1" ]]; then
-  error_exit "Platform argument required. Usage: ./release.sh [android|ios|desktop]"
+if [[ -z "$PLATFORM" ]]; then
+  error_exit "Platform argument required. Usage: ./release.sh [-d] [android|ios|desktop]"
 fi
 
-PLATFORM="$1"
 case "$PLATFORM" in
   android|ios|desktop)
     ;;
@@ -38,16 +56,20 @@ esac
 
 info "Starting release for platform: $PLATFORM"
 
-# Check working tree is clean
-if ! git diff-index --quiet HEAD --; then
-  error_exit "Working tree has staged changes. Please commit or discard them."
-fi
+# Check working tree is clean (skip in debug mode)
+if [[ "$DEBUG" == true ]]; then
+  info "Debug mode enabled — skipping working tree cleanliness checks"
+else
+  if ! git diff-index --quiet HEAD --; then
+    error_exit "Working tree has staged changes. Please commit or discard them."
+  fi
 
-if ! git diff-files --quiet; then
-  error_exit "Working tree has unstaged changes. Please commit or discard them."
-fi
+  if ! git diff-files --quiet; then
+    error_exit "Working tree has unstaged changes. Please commit or discard them."
+  fi
 
-success "Working tree is clean"
+  success "Working tree is clean"
+fi
 
 # Check out main branch
 info "Checking out main branch..."
@@ -113,7 +135,8 @@ case "$CHOICE" in
 esac
 
 NEW_VERSION="$MAJOR.$MINOR.$PATCH"
-success "New version: $NEW_VERSION"
+NEW_VERSION_CODE=$((MAJOR * 10000 + MINOR * 100 + PATCH))
+success "New version: $NEW_VERSION ($NEW_VERSION_CODE)"
 
 # Update libs.versions.toml
 info "Updating gradle/libs.versions.toml..."
@@ -137,7 +160,7 @@ if [[ "$PLATFORM" == "ios" ]]; then
 
   # Update CFBundleVersion (build number)
   # For simplicity, we increment patch as build number
-  /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $PATCH" "$IOS_PLIST_PATH" || error_exit "Failed to update CFBundleVersion"
+  /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_VERSION_CODE" "$IOS_PLIST_PATH" || error_exit "Failed to update CFBundleVersion"
 
   success "Updated iOS Info.plist"
 fi
@@ -153,22 +176,35 @@ if [[ "$PLATFORM" == "ios" ]]; then
   git add "$IOS_PLIST_PATH" || error_exit "Failed to stage Info.plist"
 fi
 
-git commit -m "$COMMIT_MSG" || error_exit "Failed to commit"
+if [[ "$DEBUG" == false ]]; then
+  git commit -m "$COMMIT_MSG" || error_exit "Failed to commit"
+fi
 success "Committed"
 
 # Push to origin
 info "Pushing main to origin..."
-git push origin main || error_exit "Failed to push main to origin"
+
+if [[ "$DEBUG" == false ]]; then
+   git push origin main || error_exit "Failed to push main to origin"
+fi
 success "Pushed to origin"
 
 # Create and push tag
 TAG="v$NEW_VERSION-$PLATFORM"
 info "Creating tag: $TAG"
-git tag "$TAG" || error_exit "Failed to create tag"
+
+if [[ "$DEBUG" == false ]]; then
+   git tag "$TAG" || error_exit "Failed to create tag"
+fi
+
 success "Tag created"
 
 info "Pushing tag to origin..."
-git push origin "$TAG" || error_exit "Failed to push tag to origin"
+
+if [[ "$DEBUG" == false ]]; then
+   git push origin "$TAG" || error_exit "Failed to push tag to origin"
+fi
+
 success "Tag pushed to origin"
 
 echo ""
