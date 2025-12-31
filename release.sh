@@ -126,10 +126,33 @@ fi
 rm -f gradle/libs.versions.toml.bak
 success "Updated gradle/libs.versions.toml"
 
+if [[ "$PLATFORM" == "ios" ]]; then
+  info "Updating iOS Info.plist version..."
+  
+  # Path to your Info.plist
+  IOS_PLIST_PATH="iosApp/iosApp/Info.plist"
+  
+  # Update CFBundleShortVersionString (semantic version)
+  /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $NEW_VERSION" "$IOS_PLIST_PATH" || error_exit "Failed to update CFBundleShortVersionString"
+
+  # Update CFBundleVersion (build number)
+  # For simplicity, we increment patch as build number
+  /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $PATCH" "$IOS_PLIST_PATH" || error_exit "Failed to update CFBundleVersion"
+
+  success "Updated iOS Info.plist"
+fi
+
 # Commit changes
 COMMIT_MSG="Release version v$NEW_VERSION"
 info "Committing with message: $COMMIT_MSG"
+
 git add gradle/libs.versions.toml || error_exit "Failed to stage gradle/libs.versions.toml"
+
+
+if [[ "$PLATFORM" == "ios" ]]; then
+  git add "$IOS_PLIST_PATH" || error_exit "Failed to stage Info.plist"
+fi
+
 git commit -m "$COMMIT_MSG" || error_exit "Failed to commit"
 success "Committed"
 
