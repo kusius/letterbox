@@ -3,10 +3,16 @@ name: Android Release
 on:
   push:
     tags:
-      - 'v*-android'  # Triggers on version tags like v1.0.0
+      - 'v*-android'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to publish'
+        required: true
 
 jobs:
   build:
+    if: startsWith(github.event.inputs.tag, 'v') && contains(github.event.inputs.tag, '-android')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
