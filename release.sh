@@ -71,17 +71,17 @@ else
   success "Working tree is clean"
 fi
 
-# Check out main branch
-info "Checking out main branch..."
-git checkout main || error_exit "Failed to checkout main branch"
-success "On main branch"
+# Check out dev branch
+info "Checking out dev branch..."
+git checkout dev || error_exit "Failed to checkout dev branch"
+success "On dev branch"
 
-# Verify main is in sync with origin
-info "Verifying main is in sync with origin..."
+# Verify dev is in sync with origin
+info "Verifying dev is in sync with origin..."
 git fetch origin || error_exit "Failed to fetch from origin"
 
-LOCAL=$(git rev-parse main)
-REMOTE=$(git rev-parse origin/main)
+LOCAL=$(git rev-parse dev)
+REMOTE=$(git rev-parse origin/dev)
 
 if [[ "$LOCAL" != "$REMOTE" ]]; then
   error_exit "Main branch is out of sync with origin. Please pull/push changes."
@@ -182,10 +182,10 @@ fi
 success "Committed"
 
 # Push to origin
-info "Pushing main to origin..."
+info "Pushing dev to origin..."
 
 if [[ "$DEBUG" == false ]]; then
-   git push origin main || error_exit "Failed to push main to origin"
+   git push origin dev || error_exit "Failed to push dev to origin"
 fi
 success "Pushed to origin"
 
