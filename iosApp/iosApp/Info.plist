@@ -7,7 +7,7 @@
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.1</string>
+	<string>1.1.0</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -18,7 +18,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>10001</string>
+	<string>10100</string>
 	<key>GIDClientID</key>
 	<string>$(IOS_CLIENT_ID)</string>
 	<key>GIDReverseClientID</key>
