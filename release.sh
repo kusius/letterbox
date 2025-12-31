@@ -162,7 +162,7 @@ git push origin main || error_exit "Failed to push main to origin"
 success "Pushed to origin"
 
 # Create and push tag
-TAG="v$NEW_VERSION"
+TAG="v$NEW_VERSION-$PLATFORM"
 info "Creating tag: $TAG"
 git tag "$TAG" || error_exit "Failed to create tag"
 success "Tag created"
