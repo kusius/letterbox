@@ -1,0 +1,46 @@
+name: Tag Release on Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  tag_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Get new commits in push
+        id: commits
+        run: |
+          # Get all commits in this push (from previous ref to head)
+          COMMITS=$(git log ${{ github.event.before }}..${{ github.sha }} --pretty=format:%B)
+          echo "$COMMITS" > commits.txt
+          echo "COMMIT_LIST<<EOF" >> $GITHUB_ENV
+          cat commits.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Create tags for version bump commits
+        run: |
+          while IFS= read -r line; do
+            if [[ "$line" =~ Release\ version\ v([0-9]+\.[0-9]+\.[0-9]+)\ for\ platform\ ([a-z]+) ]]; then
+              VERSION="${BASH_REMATCH[1]}"
+              PLATFORM="${BASH_REMATCH[2]}"
+              TAG="v$VERSION-$PLATFORM"
+              # Check if tag already exists
+              if git rev-parse "$TAG" >/dev/null 2>&1; then
+                echo "Tag $TAG already exists, skipping"
+              else
+                git tag "$TAG"
+                git push origin "$TAG"
+                echo "Created and pushed tag $TAG"
+              fi
+            fi
+          done <<< "$COMMIT_LIST"

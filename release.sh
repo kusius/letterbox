@@ -189,24 +189,6 @@ if [[ "$DEBUG" == false ]]; then
 fi
 success "Pushed to origin"
 
-# Create and push tag
-TAG="v$NEW_VERSION-$PLATFORM"
-info "Creating tag: $TAG"
-
-if [[ "$DEBUG" == false ]]; then
-   git tag "$TAG" || error_exit "Failed to create tag"
-fi
-
-success "Tag created"
-
-info "Pushing tag to origin..."
-
-if [[ "$DEBUG" == false ]]; then
-   git push origin "$TAG" || error_exit "Failed to push tag to origin"
-fi
-
-success "Tag pushed to origin"
-
 echo ""
 echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}Release complete!${NC}"
