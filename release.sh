@@ -151,10 +151,10 @@ success "Updated gradle/libs.versions.toml"
 
 if [[ "$PLATFORM" == "ios" ]]; then
   info "Updating iOS Info.plist version..."
-  
+
   # Path to your Info.plist
   IOS_PLIST_PATH="iosApp/iosApp/Info.plist"
-  
+
   # Update CFBundleShortVersionString (semantic version)
   /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $NEW_VERSION" "$IOS_PLIST_PATH" || error_exit "Failed to update CFBundleShortVersionString"
 
