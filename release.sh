@@ -143,7 +143,7 @@ if [[ "$PLATFORM" == "ios" ]]; then
 fi
 
 # Commit changes
-COMMIT_MSG="Release version v$NEW_VERSION"
+COMMIT_MSG="Release version v$NEW_VERSION for platform $PLATFORM"
 info "Committing with message: $COMMIT_MSG"
 
 git add gradle/libs.versions.toml || error_exit "Failed to stage gradle/libs.versions.toml"
