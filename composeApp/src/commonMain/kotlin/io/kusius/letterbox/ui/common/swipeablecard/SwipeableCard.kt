@@ -57,18 +57,18 @@ fun <T> SwipeableCard(
     ) {
         val cardWidth = constraints.maxWidth.toFloat()
         val cardHeight = constraints.maxHeight.toFloat()
-        val windowInfo = LocalWindowInfo.current.containerSize
+        val windowSize = LocalWindowInfo.current.containerSize
         val scope = rememberCoroutineScope()
 
         val swipeThresholdOffset =
             Offset(
-                x = cardWidth / 2f,
-                y = if (draggable) cardHeight / 2f else cardHeight / 100f,
+                x = 0.45f * windowSize.width,
+                y = 0.25f * windowSize.height,
             )
 
         val offset =
             remember(key) {
-                Animatable(Offset(0f, 0f), Offset.VectorConverter)
+                Animatable(Offset.Zero, Offset.VectorConverter)
             }
 
         suspend fun onSwipedInternal(
@@ -100,7 +100,7 @@ fun <T> SwipeableCard(
         }
 
         val nestedScrollConnection =
-            remember {
+            remember(key) {
                 object : NestedScrollConnection {
                     override suspend fun onPostFling(
                         consumed: Velocity,
