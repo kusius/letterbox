@@ -62,9 +62,6 @@ kotlin {
         }
     }
 
-    macosArm64()
-    macosX64()
-
     listOf(
         iosX64(),
         iosArm64(),
@@ -140,6 +137,7 @@ kotlin {
             implementation(libs.coil)
             implementation(libs.coil.svg)
             implementation(libs.compose.material3.adaptive)
+            implementation(libs.store)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -147,7 +145,6 @@ kotlin {
 
         desktopMain.dependencies {
             implementation(libs.compose.webview)
-            implementation(libs.store)
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
             implementation(libs.sqlidelight.sqlite)
@@ -158,7 +155,6 @@ kotlin {
         }
 
         mobileMain.dependencies {
-            implementation(libs.store)
             implementation(libs.compose.webview)
         }
 
