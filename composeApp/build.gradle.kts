@@ -7,12 +7,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinHierarchyTemplate
 import java.util.Properties
 
-fun String.toVersionCode(): Int {
-    val parts = this.split(".")
-    require(parts.size == 3) { "Version must be in format X.Y.Z" }
-    val (major, minor, patch) = parts.map { it.toInt() }
-    return major * 10000 + minor * 100 + patch
-}
 
 val localProperties =
     Properties().apply {
@@ -32,7 +26,7 @@ plugins {
     alias(libs.plugins.sqlDelight)
     alias(libs.plugins.buildConfig)
     alias(libs.plugins.googleServices)
-    id("ios-secrets")
+    id("ios-scripts")
     id("native-build")
     id("desktop-credentials")
 }
