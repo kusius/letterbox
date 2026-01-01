@@ -38,6 +38,35 @@ val generateIosSecrets by tasks.registering {
         println("Generated iOS secrets to ${outputFile.absolutePath}")
     }
 }
+
+val updateIosVersion by tasks.registering {
+    val configFile = rootProject.file("iosApp/Configuration/Config.xcconfig")
+    val version = providers.gradleProperty("iosVersion")
+
+    inputs.property("version", version)
+    outputs.file(configFile)
+
+    doLast {
+        val versionStr = version.orNull
+            ?: throw GradleException("Usage: ./gradlew updateIosVersion -PiosVersion=1.2.3")
+        val versionCode = versionStr.toVersionCode()
+
+        val content = configFile.readText()
+        val updatedContent =
+            content
+                .replaceFirst(
+                    Regex("MARKETING_VERSION\\s*=\\s*[^\\n]+"),
+                    "MARKETING_VERSION=$versionStr",
+                ).replaceFirst(
+                    Regex("CURRENT_PROJECT_VERSION\\s*=\\s*[^\\n]+"),
+                    "CURRENT_PROJECT_VERSION=$versionCode",
+                )
+
+        configFile.writeText(updatedContent)
+        println("Updated iOS MARKETING_VERSION to $versionStr and CURRENT_PROJECT_VERSION to $versionCode")
+    }
+}
+
 // Run before iOS builds
 tasks.matching { it.name.startsWith("compile") && it.name.contains("Ios") }.configureEach {
     dependsOn(generateIosSecrets)
