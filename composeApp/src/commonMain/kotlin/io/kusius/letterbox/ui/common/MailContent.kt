@@ -197,8 +197,7 @@ internal fun HtmlMail(
                     },
                     modifier =
                         modifier
-                            .fillMaxWidth()
-                            .height(800.dp)
+                            .fillMaxSize()
                             .clipToBounds(),
                 )
             }
