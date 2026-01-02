@@ -53,6 +53,7 @@ import io.kusius.letterbox.model.MailPartBody
 import io.kusius.letterbox.model.MailSummary.Companion.randomMailSummary
 import io.kusius.letterbox.model.MimeTypes
 import io.kusius.letterbox.ui.NavigationRoute
+import io.kusius.letterbox.ui.common.Loading
 import io.kusius.letterbox.ui.common.MailItem
 import io.kusius.letterbox.ui.common.cardstack.lazy.LazyCardStack
 import io.kusius.letterbox.ui.common.cardstack.lazy.itemsIndexed
@@ -89,7 +90,7 @@ fun LetterboxScreenRoot(
         }
 
         is LetterboxUiState.Loading -> {
-            Text(text = "Loading")
+            Loading(modifier = modifier.fillMaxSize())
         }
 
         is LetterboxUiState.Error -> {
