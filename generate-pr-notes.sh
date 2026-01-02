@@ -84,6 +84,7 @@ echo "" >> "$OUTPUT_FILE"
 get_category_title() {
   case "$1" in
     feat) echo "### ✨ Features" ;;
+    enhancement) echo "### 💎 Enhancements" ;;
     fix) echo "### 🐛 Bug Fixes" ;;
     docs) echo "### 📝 Documentation" ;;
     style) echo "### 💄 Styling" ;;

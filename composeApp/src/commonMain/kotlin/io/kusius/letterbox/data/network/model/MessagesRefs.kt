@@ -51,17 +51,21 @@ data class NetworkMail(
     val sizeEstimate: Int,
 ) : ApiModel {
     override fun toModel(): MailSummary? {
+        val sender = getHeaderOrNull("From") ?: return null
+        val match = emailSeparatorRegex.matchEntire(sender) ?: return null
+        val groups = match.groupValues.takeIf { it.size == 3 } ?: return null
+
         return MailSummary(
             id = id,
             title = getHeaderOrNull("Subject") ?: return null,
-            sender = getHeaderOrNull("From") ?: return null,
+            sender = groups[1],
+            senderEmail = groups[2],
             summary = snippet,
             receivedAtUnixMillis =
                 internalDate.toLongOrNull()?.let {
                     Instant.fromEpochMilliseconds(it)
                 }
                     ?: return null,
-            // has unread label -> isRead = 0
             isRead = !hasLabel("UNREAD"),
         )
     }
@@ -71,6 +75,10 @@ data class NetworkMail(
             summary = this.toModel() ?: return null,
             mailPart = payload.toModel(),
         )
+    }
+
+    private companion object {
+        val emailSeparatorRegex = Regex("""^(.*?)\s*<([^>]+)>$""")
     }
 }
 

@@ -23,6 +23,7 @@ internal fun MailEntity.toModel(): MailSummary =
         summary = summary ?: "",
         receivedAtUnixMillis = Instant.fromEpochMilliseconds(received_at_unix_millis),
         isRead = is_read == 1L,
+        senderEmail = "aaaa",
     )
 
 internal fun List<MailEntity>.toModelList(): List<MailSummary> = map(MailEntity::toModel)

@@ -47,6 +47,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -63,11 +64,10 @@ import kotlin.time.Clock
 private fun RoundedIcon(
     painter: Painter,
     contentDescription: String?,
+    size: Dp,
     modifier: Modifier = Modifier,
-    size: Dp = 50.dp,
 ) {
     Box(
-        contentAlignment = Alignment.Center,
         modifier =
             modifier
                 .size(size)
@@ -78,7 +78,6 @@ private fun RoundedIcon(
         Icon(
             painter = painter,
             contentDescription = contentDescription,
-            modifier = Modifier.align(Alignment.Center),
         )
     }
 }
@@ -204,37 +203,44 @@ internal fun SummaryItem(
         modifier = modifier.clickable(onClick = onAction),
     ) {
         Card(
-            modifier = Modifier.height(100.dp).fillMaxWidth(),
+            modifier = Modifier
+                .height(100.dp)
+                .fillMaxWidth(),
         ) {
             Row(
-                horizontalArrangement =
-                    Arrangement.spacedBy(
-                        space = 8.dp,
-                        alignment = Alignment.CenterHorizontally,
-                    ),
-                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceAround,
+                modifier = Modifier
+                    .padding(vertical = 4.dp)
+                    .fillMaxSize(),
             ) {
                 RoundedIcon(
                     painter = painterResource(Res.drawable.person),
                     contentDescription = null,
-                    modifier = Modifier.align(Alignment.CenterVertically),
+                    size = 35.dp,
+                    modifier = Modifier.align(Alignment.Top).padding(8.dp),
                 )
                 Column(
                     modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Top,
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
                     horizontalAlignment = Alignment.Start,
                 ) {
                     Text(
-                        text = item.title,
-                        style = AppTheme.typography().titleMedium,
-                        fontWeight = fontWeight,
-                    )
-                    Text(
-                        text = "From: ${item.sender}",
+                        text = item.sender,
                         style = AppTheme.typography().titleSmall,
                         fontWeight = fontWeight,
                     )
-                    Text(text = item.summary, style = AppTheme.typography().bodySmall)
+                    Text(
+                        text = item.title,
+                        style = AppTheme.typography().titleSmall,
+                        fontWeight = fontWeight,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    Text(
+                        text = item.summary,
+                        style = AppTheme.typography().bodySmall,
+                        overflow = TextOverflow.Ellipsis,
+                    )
                 }
             }
         }
@@ -255,6 +261,7 @@ private fun PreviewMainSummaryItem() {
                     sender = "gmkousis@gmail.com",
                     isRead = false,
                     receivedAtUnixMillis = Clock.System.now(),
+                    senderEmail = "george@mail.com",
                 ),
             onAction = {},
             onEndToStartSwipe = {},
@@ -272,10 +279,11 @@ private fun PreviewMainSummaryItemRead() {
                 MailSummary(
                     id = "Id",
                     title = "Re: Hello",
-                    summary = "I would like to say hello to you",
+                    summary = "I would like to say hello to you I would like to say hello to youI would like to say hello to youI would like to say hello to youI would like to say hello to youI would like to say hello to youI would like to say hello to youI would like to say hello to you",
                     sender = "gmkousis@gmail.com",
                     isRead = true,
                     receivedAtUnixMillis = Clock.System.now(),
+                    senderEmail = "george@mail.com"
                 ),
             onAction = {},
             onEndToStartSwipe = {},
