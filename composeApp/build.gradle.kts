@@ -138,6 +138,7 @@ kotlin {
             implementation(libs.coil.svg)
             implementation(libs.compose.material3.adaptive)
             implementation(libs.store)
+            implementation(libs.kottie)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -174,6 +175,7 @@ kotlin {
             dependencies {
                 implementation(libs.sqlidelight.native)
                 implementation(libs.ktor.client.darwin)
+                implementation(libs.snizzors)
             }
         }
     }
