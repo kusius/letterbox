@@ -1,6 +1,7 @@
 package io.kusius.letterbox.ui.common
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
@@ -26,9 +27,14 @@ fun Loading(modifier: Modifier = Modifier) {
     var animation by remember { mutableStateOf("") }
     val windowInfo = LocalWindowInfo.current
     val lottieSize = 0.5f * windowInfo.containerSize.width
-
+    val isDarkTheme = isSystemInDarkTheme()
     LaunchedEffect(Unit) {
-        animation = Res.readBytes("files/loading.json").decodeToString()
+        animation =
+            if (isDarkTheme) {
+                Res.readBytes("files/loading.json").decodeToString()
+            } else {
+                Res.readBytes("files/loading-light.json").decodeToString()
+            }
     }
 
     Column(
