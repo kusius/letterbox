@@ -1,8 +1,8 @@
 [versions]
-app-version-android = "1.1.6"
-app-version-ios = "1.1.6"
+app-version-android = "1.2.0"
+app-version-ios = "1.2.0"
 agp = "8.13.0"
-android-compileSdk = "35"
+android-compileSdk = "36"
 android-minSdk = "24"
 android-targetSdk = "35"
 androidx-activity = "1.10.1"
@@ -37,9 +37,12 @@ googleOAuthClientJetty = "1.39.0"
 jna = "5.14.0"
 buildConfig ="6.0.7"
 googleServices="4.4.4"
+kottie = "2.2.0"
+snizzors = "1.0.0-cmp1.9"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-test-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines"}
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
@@ -88,6 +91,8 @@ google-api-client = { module = "com.google.api-client:google-api-client", versio
 google-oauth-client-jetty = { module = "com.google.oauth-client:google-oauth-client-jetty", version.ref = "googleOAuthClientJetty"}
 jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
 jna-platform = { module = "net.java.dev.jna:jna-platform", version.ref = "jna" }
+kottie = { module = "io.github.ismai117:kottie", version.ref = "kottie" }
+snizzors = { module = "com.infiniteretry.snizzors:snizzors", version.ref = "snizzors"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

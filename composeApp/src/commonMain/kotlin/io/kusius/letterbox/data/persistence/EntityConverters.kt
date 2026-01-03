@@ -23,6 +23,7 @@ internal fun MailEntity.toModel(): MailSummary =
         summary = summary ?: "",
         receivedAtUnixMillis = Instant.fromEpochMilliseconds(received_at_unix_millis),
         isRead = is_read == 1L,
+        senderEmail = "aaaa",
     )
 
 internal fun List<MailEntity>.toModelList(): List<MailSummary> = map(MailEntity::toModel)
@@ -36,6 +37,7 @@ internal fun MailSummary.toEntity(): MailEntity =
         received_at_unix_millis = receivedAtUnixMillis.toEpochMilliseconds(),
         is_read = if (isRead) 1L else 0L,
         raw = null,
+        sender_email = senderEmail,
     )
 
 internal fun Mail.toEntity(): MailEntity = summary.toEntity().copy(raw = cbor.encodeToByteArray(mailPart))

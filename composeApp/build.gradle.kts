@@ -7,12 +7,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinHierarchyTemplate
 import java.util.Properties
 
-fun String.toVersionCode(): Int {
-    val parts = this.split(".")
-    require(parts.size == 3) { "Version must be in format X.Y.Z" }
-    val (major, minor, patch) = parts.map { it.toInt() }
-    return major * 10000 + minor * 100 + patch
-}
 
 val localProperties =
     Properties().apply {
@@ -32,7 +26,7 @@ plugins {
     alias(libs.plugins.sqlDelight)
     alias(libs.plugins.buildConfig)
     alias(libs.plugins.googleServices)
-    id("ios-secrets")
+    id("ios-scripts")
     id("native-build")
     id("desktop-credentials")
 }
@@ -42,7 +36,8 @@ sqldelight {
     databases {
         create("Database") {
             packageName.set("io.kusius.letterbox")
-            version = 1
+            version = 2
+            schemaOutputDirectory.set(file("src/commonMain/sqldelight/databases"))
         }
     }
 }
@@ -67,9 +62,6 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-
-    macosArm64()
-    macosX64()
 
     listOf(
         iosX64(),
@@ -113,6 +105,7 @@ kotlin {
         }
         val desktopMain by getting
         val mobileMain by getting
+        val androidUnitTest by getting
 //        val macosMain by getting
 
         commonMain.dependencies {
@@ -146,14 +139,16 @@ kotlin {
             implementation(libs.coil)
             implementation(libs.coil.svg)
             implementation(libs.compose.material3.adaptive)
+            implementation(libs.store)
+            implementation(libs.kottie)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlin.test.coroutines)
         }
 
         desktopMain.dependencies {
             implementation(libs.compose.webview)
-            implementation(libs.store)
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
             implementation(libs.sqlidelight.sqlite)
@@ -164,7 +159,6 @@ kotlin {
         }
 
         mobileMain.dependencies {
-            implementation(libs.store)
             implementation(libs.compose.webview)
         }
 
@@ -180,10 +174,17 @@ kotlin {
             }
         }
 
+        androidUnitTest {
+            dependencies {
+                implementation(libs.sqlidelight.sqlite)
+            }
+        }
+
         iosMain {
             dependencies {
                 implementation(libs.sqlidelight.native)
                 implementation(libs.ktor.client.darwin)
+                implementation(libs.snizzors)
             }
         }
     }

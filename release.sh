@@ -135,8 +135,7 @@ case "$CHOICE" in
 esac
 
 NEW_VERSION="$MAJOR.$MINOR.$PATCH"
-NEW_VERSION_CODE=$((MAJOR * 10000 + MINOR * 100 + PATCH))
-success "New version: $NEW_VERSION ($NEW_VERSION_CODE)"
+success "New version: $NEW_VERSION"
 
 # Update libs.versions.toml
 info "Updating gradle/libs.versions.toml..."
@@ -150,19 +149,11 @@ rm -f gradle/libs.versions.toml.bak
 success "Updated gradle/libs.versions.toml"
 
 if [[ "$PLATFORM" == "ios" ]]; then
-  info "Updating iOS Info.plist version..."
+  info "Updating iOS version in xcconfing..."
 
-  # Path to your Info.plist
-  IOS_PLIST_PATH="iosApp/iosApp/Info.plist"
+  ./gradlew updateIosVersion -PiosVersion=$NEW_VERSION || error_exit "failed to run updateIosVersion gradle task"
 
-  # Update CFBundleShortVersionString (semantic version)
-  /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $NEW_VERSION" "$IOS_PLIST_PATH" || error_exit "Failed to update CFBundleShortVersionString"
-
-  # Update CFBundleVersion (build number)
-  # For simplicity, we increment patch as build number
-  /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_VERSION_CODE" "$IOS_PLIST_PATH" || error_exit "Failed to update CFBundleVersion"
-
-  success "Updated iOS Info.plist"
+  success "Updated iOS version to $NEW_VERSION"
 fi
 
 # Commit changes
@@ -170,11 +161,6 @@ COMMIT_MSG="Release version v$NEW_VERSION for platform $PLATFORM"
 info "Committing with message: $COMMIT_MSG"
 
 git add gradle/libs.versions.toml || error_exit "Failed to stage gradle/libs.versions.toml"
-
-
-if [[ "$PLATFORM" == "ios" ]]; then
-  git add "$IOS_PLIST_PATH" || error_exit "Failed to stage Info.plist"
-fi
 
 if [[ "$DEBUG" == false ]]; then
   git commit -m "$COMMIT_MSG" || error_exit "Failed to commit"

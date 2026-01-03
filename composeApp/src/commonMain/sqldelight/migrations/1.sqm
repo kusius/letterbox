@@ -1,0 +1,19 @@
+ALTER TABLE MailEntity ADD COLUMN sender_email TEXT;
+
+UPDATE MailEntity
+SET
+    sender_email = CASE
+        WHEN sender LIKE '%<%>%'
+        THEN substr(
+            sender,
+            instr(sender, '<') + 1,
+            instr(sender, '>') - instr(sender, '<') - 1
+        )
+        ELSE NULL
+    END,
+    sender = CASE
+        WHEN sender LIKE '%<%>%'
+        THEN trim(substr(sender, 1, instr(sender, '<') - 1))
+        ELSE sender
+    END;
+

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DC8E72542F071D6C00BC7D4C /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = DC8E72532F071D6C00BC7D4C /* Lottie */; };
 		DCFDE9E32ECE6A0300FF8040 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = DCFDE9E22ECE6A0300FF8040 /* GoogleSignIn */; };
 		DCFDE9E52ECE6A0300FF8040 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DCFDE9E42ECE6A0300FF8040 /* GoogleSignInSwift */; };
 /* End PBXBuildFile section */
@@ -48,6 +49,7 @@
 			files = (
 				DCFDE9E32ECE6A0300FF8040 /* GoogleSignIn in Frameworks */,
 				DCFDE9E52ECE6A0300FF8040 /* GoogleSignInSwift in Frameworks */,
+				DC8E72542F071D6C00BC7D4C /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,6 +96,7 @@
 			packageProductDependencies = (
 				DCFDE9E22ECE6A0300FF8040 /* GoogleSignIn */,
 				DCFDE9E42ECE6A0300FF8040 /* GoogleSignInSwift */,
+				DC8E72532F071D6C00BC7D4C /* Lottie */,
 			);
 			productName = iosApp;
 			productReference = B9DA97B12DC1472C00A4DA20 /* Letterbox.app */;
@@ -125,6 +128,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				DCFDE9E12ECE6A0300FF8040 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				DC8E72522F071D6C00BC7D4C /* XCRemoteSwiftPackageReference "lottie-spm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B9DA97B22DC1472C00A4DA20 /* Products */;
@@ -307,6 +311,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = NO;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = TPMBQH767C;
 				ENABLE_PREVIEWS = YES;
@@ -342,6 +347,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = NO;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = TPMBQH767C;
 				ENABLE_PREVIEWS = YES;
@@ -392,6 +398,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		DC8E72522F071D6C00BC7D4C /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.2;
+			};
+		};
 		DCFDE9E12ECE6A0300FF8040 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
@@ -403,6 +417,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		DC8E72532F071D6C00BC7D4C /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DC8E72522F071D6C00BC7D4C /* XCRemoteSwiftPackageReference "lottie-spm" */;
+			productName = Lottie;
+		};
 		DCFDE9E22ECE6A0300FF8040 /* GoogleSignIn */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = DCFDE9E12ECE6A0300FF8040 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
