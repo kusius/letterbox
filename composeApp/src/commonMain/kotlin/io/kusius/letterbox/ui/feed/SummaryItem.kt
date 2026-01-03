@@ -204,7 +204,7 @@ internal fun SummaryItem(
     ) {
         Card(
             modifier = Modifier
-                .height(100.dp)
+                .height(80.dp)
                 .fillMaxWidth(),
         ) {
             Row(
