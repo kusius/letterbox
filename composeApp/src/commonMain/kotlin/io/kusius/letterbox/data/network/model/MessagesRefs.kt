@@ -1,5 +1,6 @@
 package io.kusius.letterbox.data.network.model
 
+import io.kusius.letterbox.data.MailSeparatorUseCase.emailSeparatorRegex
 import io.kusius.letterbox.model.Mail
 import io.kusius.letterbox.model.MailPart
 import io.kusius.letterbox.model.MailPartBody
@@ -75,10 +76,6 @@ data class NetworkMail(
             summary = this.toModel() ?: return null,
             mailPart = payload.toModel(),
         )
-    }
-
-    private companion object {
-        val emailSeparatorRegex = Regex("""^(.*?)\s*<([^>]+)>$""")
     }
 }
 

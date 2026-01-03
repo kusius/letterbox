@@ -36,7 +36,8 @@ sqldelight {
     databases {
         create("Database") {
             packageName.set("io.kusius.letterbox")
-            version = 1
+            version = 2
+            schemaOutputDirectory.set(file("src/commonMain/sqldelight/databases"))
         }
     }
 }
