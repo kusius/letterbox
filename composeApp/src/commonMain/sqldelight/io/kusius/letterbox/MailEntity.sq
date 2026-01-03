@@ -5,7 +5,8 @@ CREATE TABLE MailEntity (
     summary TEXT,
     received_at_unix_millis INTEGER NOT NULL,
     is_read INTEGER NOT NULL,
-    raw BLOB
+    raw BLOB,
+    sender_email TEXT
 );
 
 CREATE INDEX mail_id ON MailEntity(id);

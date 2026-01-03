@@ -1,7 +1,9 @@
 package io.kusius.letterbox.data.persistence
 
+import app.cash.sqldelight.db.AfterVersion
 import app.cash.sqldelight.db.SqlDriver
 import io.kusius.letterbox.Database
+import io.kusius.letterbox.data.MailSeparatorUseCase.emailSeparatorRegex
 
 interface DriverFactory {
     fun createDriver(): SqlDriver

@@ -180,29 +180,18 @@ internal fun HtmlMail(
             )
 
         val bgColor = MaterialTheme.colorScheme.background
-
-        LazyColumn(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            userScrollEnabled = true,
-            modifier = modifier.fillMaxSize(),
-        ) {
-            item {
-                WebView(
-                    state = state,
-                    navigator = navigator,
-                    captureBackPresses = false,
-                    onCreated = { webView: NativeWebView ->
-                        configureNativeWebview(webView, bgColor)
-                    },
-                    modifier =
-                        modifier
-                            .fillMaxWidth()
-                            .height(800.dp)
-                            .clipToBounds(),
-                )
-            }
-        }
+        WebView(
+            state = state,
+            navigator = navigator,
+            captureBackPresses = false,
+            onCreated = { webView: NativeWebView ->
+                configureNativeWebview(webView, bgColor)
+            },
+            modifier =
+                modifier
+                    .fillMaxSize()
+                    .clipToBounds(),
+        )
     }
 }
 
