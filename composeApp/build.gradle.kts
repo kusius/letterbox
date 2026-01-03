@@ -105,6 +105,7 @@ kotlin {
         }
         val desktopMain by getting
         val mobileMain by getting
+        val androidUnitTest by getting
 //        val macosMain by getting
 
         commonMain.dependencies {
@@ -143,6 +144,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlin.test.coroutines)
         }
 
         desktopMain.dependencies {
@@ -169,6 +171,12 @@ kotlin {
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.ktor.client.okhttp)
                 implementation(libs.sqlidelight.android)
+            }
+        }
+
+        androidUnitTest {
+            dependencies {
+                implementation(libs.sqlidelight.sqlite)
             }
         }
 
