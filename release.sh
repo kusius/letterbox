@@ -162,11 +162,6 @@ info "Committing with message: $COMMIT_MSG"
 
 git add gradle/libs.versions.toml || error_exit "Failed to stage gradle/libs.versions.toml"
 
-
-if [[ "$PLATFORM" == "ios" ]]; then
-  git add "$IOS_PLIST_PATH" || error_exit "Failed to stage Info.plist"
-fi
-
 if [[ "$DEBUG" == false ]]; then
   git commit -m "$COMMIT_MSG" || error_exit "Failed to commit"
 fi
