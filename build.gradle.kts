@@ -11,5 +11,6 @@ plugins {
     alias(libs.plugins.sqlDelight) apply false
     alias(libs.plugins.ktlint) apply true
     alias(libs.plugins.buildConfig) apply true
-    alias(libs.plugins.googleServices) apply true
+    alias(libs.plugins.googleServices) apply false
+    alias(libs.plugins.firebaseCrashlytics) apply false
 }

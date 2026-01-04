@@ -26,6 +26,7 @@ plugins {
     alias(libs.plugins.sqlDelight)
     alias(libs.plugins.buildConfig)
     alias(libs.plugins.googleServices)
+    alias(libs.plugins.firebaseCrashlytics)
     id("ios-scripts")
     id("native-build")
     id("desktop-credentials")
@@ -141,6 +142,7 @@ kotlin {
             implementation(libs.compose.material3.adaptive)
             implementation(libs.store)
             implementation(libs.kottie)
+            implementation(libs.firebase.kotlin.common)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -160,6 +162,7 @@ kotlin {
 
         mobileMain.dependencies {
             implementation(libs.compose.webview)
+            implementation(libs.firebase.kotlin.crashlytics)
         }
 
         androidMain {
@@ -171,6 +174,8 @@ kotlin {
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.ktor.client.okhttp)
                 implementation(libs.sqlidelight.android)
+                implementation(project.dependencies.platform(libs.firebase.android.bom))
+                implementation(libs.firebase.android.crashlytics)
             }
         }
 
