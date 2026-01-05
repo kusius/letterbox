@@ -143,6 +143,7 @@ kotlin {
             implementation(libs.store)
             implementation(libs.kottie)
             implementation(libs.firebase.kotlin.common)
+            implementation(libs.firebase.kotlin.app)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

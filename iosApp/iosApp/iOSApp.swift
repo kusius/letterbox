@@ -1,12 +1,14 @@
 import SwiftUI
 import GoogleSignIn
 import ComposeApp
+import Firebase
 
 @main
 struct iOSApp: App {
     
     
     init() {
+        FirebaseApp.configure()
         let platformKt = Platform_iosKt.getPlatform()
         platformKt.debugBuild()
         LottieAnimation_iosKt.lottieUiKitViewProvider = LottieIOSUiKitViewProvider()
