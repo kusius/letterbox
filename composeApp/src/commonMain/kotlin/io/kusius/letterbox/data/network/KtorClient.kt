@@ -3,6 +3,7 @@ package io.kusius.letterbox.data.network
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
@@ -30,6 +31,7 @@ import io.kusius.letterbox.data.network.model.ApiModel
 import io.kusius.letterbox.data.network.model.TokenInfo
 import io.kusius.letterbox.domain.auth.AuthResult
 import io.kusius.letterbox.domain.auth.Authenticator
+import io.kusius.letterbox.domain.auth.Scopes
 import kotlinx.serialization.json.Json
 
 sealed interface ApiResult<T> {
@@ -54,6 +56,7 @@ class KtorClient(
 ) {
     private val refreshTokenKey = stringPreferencesKey("refreshToken")
     private val bearerTokenKey = stringPreferencesKey("bearerToken")
+    private val scopeVersionKey = intPreferencesKey("GMAIL_API_SCOPES")
 
     private suspend fun processGranted(result: AuthResult.Granted): BearerTokens {
         val currentTokens = getTokens()
@@ -95,6 +98,8 @@ class KtorClient(
             install(Auth) {
                 bearer {
                     loadTokens {
+                        // Invalidate current tokens if scope versions don't match
+                        if (getScopesVersion() != Scopes.VERSION) return@loadTokens null
                         val currentTokens = getTokens()
                         Napier.d("Loading current tokens \n\t${currentTokens?.accessToken} \n\t${currentTokens?.refreshToken} ")
                         currentTokens
@@ -187,6 +192,7 @@ class KtorClient(
         dataStore.edit { dataStore ->
             tokens.refreshToken?.let { dataStore[refreshTokenKey] = it }
             dataStore[bearerTokenKey] = tokens.accessToken
+            dataStore[scopeVersionKey] = Scopes.VERSION
         }
     }
 
@@ -201,6 +207,16 @@ class KtorClient(
 
         Napier.d("getTokens returned: ${tokens?.accessToken}, ${tokens?.refreshToken}")
         return tokens
+    }
+
+    private suspend fun getScopesVersion(): Int? {
+        var version: Int? = null
+
+        dataStore.edit {
+            version = it[scopeVersionKey]
+        }
+
+        return version
     }
 
     private suspend fun exchangeCodeForTokens(code: String): BearerTokens {

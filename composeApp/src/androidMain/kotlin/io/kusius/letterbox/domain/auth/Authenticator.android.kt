@@ -14,8 +14,7 @@ class AndroidAuthenticator private constructor(
     override suspend fun authenticate(forceAuthorization: Boolean): AuthResult {
         val result =
             authWithGoogleUseCase(
-                Scope("https://www.googleapis.com/auth/gmail.readonly"),
-                Scope("https://www.googleapis.com/auth/gmail.modify"),
+                Scopes.values.map { Scope(it) },
                 forceAuthorization = forceAuthorization,
             )
         return result
