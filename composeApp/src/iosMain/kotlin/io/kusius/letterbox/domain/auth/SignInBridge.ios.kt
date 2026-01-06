@@ -75,7 +75,11 @@ suspend fun requestGoogleSignIn(): Tokens? =
         Napier.d("Scheduling sign-in start notification on main queue: $KMM_GOOGLE_SIGNIN_NOTIFICATION")
         NSOperationQueue.mainQueue.addOperationWithBlock {
             Napier.d("Posting sign-in start notification now on main thread")
-            NSNotificationCenter.defaultCenter.postNotificationName(KMM_GOOGLE_SIGNIN_NOTIFICATION, null)
+            NSNotificationCenter.defaultCenter.postNotificationName(
+                KMM_GOOGLE_SIGNIN_NOTIFICATION,
+                null,
+                mapOf("scopes" to Scopes.values),
+            )
         }
 
         cont.invokeOnCancellation {

@@ -25,6 +25,15 @@ class GoogleSignInBridge {
 
     @objc private func handleSignInNotification(_ note: Notification) {
         print("GoogleSignInBridge: handleSignInNotification called")
+        
+        guard
+            let userInfo = note.userInfo,
+            let scopes = userInfo["scopes"] as? [String]
+        else {
+            print("No scopes provided from KMM")
+            return
+        }
+        
         guard let clientID = Bundle.main.object(forInfoDictionaryKey: "GIDClientID") as? String else {
             postCompletion(token: nil, refreshToken: nil, serverAuthCode: nil, error: "Missing CLIENT_ID in Info.plist")
             return
@@ -39,18 +48,12 @@ class GoogleSignInBridge {
             postCompletion(token: nil, refreshToken: nil, serverAuthCode: nil, error: "No root view controller to present sign-in")
             return
         }
-        
-        if(previousSignIn != nil) {
-            self.postCompletion(
-                token: previousSignIn?.accessToken.tokenString,
-                refreshToken: previousSignIn?.refreshToken.tokenString,
-                serverAuthCode: nil,
-                error: nil
-            )
-            return
-        }
-        
-        GIDSignIn.sharedInstance.signIn(withPresenting: rootVC) { user, error in
+          
+        GIDSignIn.sharedInstance.signIn(
+            withPresenting: rootVC,
+            hint: nil,
+            additionalScopes: scopes
+        ) { user, error in
             if let error = error {
                 self.postCompletion(token: nil, refreshToken: nil, serverAuthCode: nil, error: error.localizedDescription)
                 return
