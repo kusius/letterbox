@@ -2,7 +2,6 @@ package io.kusius.letterbox.ui.common
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.viewinterop.UIKitView
 import com.infiniteretry.snizzors.SnizzorsUIView
 import platform.UIKit.UIView
 
