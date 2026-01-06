@@ -2,6 +2,10 @@
 
 package io.kusius.letterbox.di
 
+import io.github.aakira.napier.Antilog
+import io.kusius.letterbox.analytics.CrashlyticsAntiLog
+import io.kusius.letterbox.analytics.CrashlyticsDelegate
+import io.kusius.letterbox.analytics.getPlatformCrashlyticsDelegate
 import io.kusius.letterbox.data.MailRemoteLocalDataSource
 import io.kusius.letterbox.data.stores.FullMailsStore
 import io.kusius.letterbox.data.stores.MailStore
@@ -34,6 +38,10 @@ val commonModule =
         single { FullMailsStore() }
 
         single { MailStore() }
+
+        single<CrashlyticsDelegate> { getPlatformCrashlyticsDelegate() }
+
+        single<Antilog> { CrashlyticsAntiLog() }
 
         viewModelOf(::MailScreenViewModel)
 

@@ -9,8 +9,6 @@ struct iOSApp: App {
     
     init() {
         FirebaseApp.configure()
-        let platformKt = Platform_iosKt.getPlatform()
-        platformKt.debugBuild()
         LottieAnimation_iosKt.lottieUiKitViewProvider = LottieIOSUiKitViewProvider()
         _ = GoogleSignInBridge.shared
     }

@@ -24,6 +24,7 @@ secrets.properties
 iosApp/Configuration/Secrets.xcconfig
 composeApp/src/desktopMain/composeResources/files/credentials.json
 composeApp/google-services.json
+iosApp/iosApp/GoogleService-Info.plist
 *.aab
 *.apk
 *PR_NOTES.*

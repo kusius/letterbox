@@ -97,6 +97,7 @@ jna-platform = { module = "net.java.dev.jna:jna-platform", version.ref = "jna" }
 kottie = { module = "io.github.ismai117:kottie", version.ref = "kottie" }
 snizzors = { module = "com.infiniteretry.snizzors:snizzors", version.ref = "snizzors"}
 firebase-kotlin-crashlytics = { module = "dev.gitlive:firebase-crashlytics", version.ref = "firebaseKotlin" }
+firebase-kotlin-analytics = { module = "dev.gitlive:firebase-analytics", version.ref = "firebaseKotlin" }
 firebase-kotlin-app = { module = "dev.gitlive:firebase-app", version.ref = "firebaseKotlin" }
 firebase-kotlin-common = { module = "dev.gitlive:firebase-common", version.ref = "firebaseKotlin" }
 
