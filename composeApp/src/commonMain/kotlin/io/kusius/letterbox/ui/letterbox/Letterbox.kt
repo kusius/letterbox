@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -53,6 +54,7 @@ import io.kusius.letterbox.model.MailPartBody
 import io.kusius.letterbox.model.MailSummary.Companion.randomMailSummary
 import io.kusius.letterbox.model.MimeTypes
 import io.kusius.letterbox.ui.NavigationRoute
+import io.kusius.letterbox.ui.common.Error
 import io.kusius.letterbox.ui.common.Loading
 import io.kusius.letterbox.ui.common.MailItem
 import io.kusius.letterbox.ui.common.cardstack.lazy.LazyCardStack
@@ -94,7 +96,11 @@ fun LetterboxScreenRoot(
         }
 
         is LetterboxUiState.Error -> {
-            Text(text = "Error! ${state.error}")
+            Error(
+                modifier =
+                    modifier
+                        .fillMaxSize(),
+            )
         }
     }
 }

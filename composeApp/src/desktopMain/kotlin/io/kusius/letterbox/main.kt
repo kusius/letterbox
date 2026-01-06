@@ -12,8 +12,6 @@ import androidx.compose.ui.window.application
 import com.sun.jna.Pointer
 import dev.datlag.kcef.KCEF
 import dev.datlag.kcef.KCEFBuilder
-import io.github.aakira.napier.DebugAntilog
-import io.github.aakira.napier.Napier
 import io.kusius.letterbox.platform.gestures.ScrollGestureDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,8 +20,6 @@ import kotlin.math.max
 
 fun main() =
     application {
-        Napier.base(DebugAntilog())
-
         System.setProperty("compose.interop.blending", "true")
         Window(
             onCloseRequest = ::exitApplication,

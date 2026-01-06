@@ -52,6 +52,7 @@ fun App(windowSizeClass: WindowSizeClass = currentWindowAdaptiveInfo().windowSiz
                 modules(appModule())
             },
     ) {
+        getPlatform().setupLogging()
         val navController = rememberNavController()
         val routeRegistry: RouteRegistry = koinInject<RouteRegistry>()
 
@@ -125,7 +126,6 @@ fun BottomNavigationBar(
     NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
         routes.forEach { item ->
             val isSelected = currentRoute::class == item::class
-//                currentRoute?.contains(item::class.qualifiedName ?: "") == true
             NavigationBarItem(
                 selected = isSelected,
                 onClick = {

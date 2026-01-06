@@ -10,11 +10,8 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Scope
 import io.github.aakira.napier.Napier
-import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.Continuation
-
-private val log = KotlinLogging.logger {}
 
 class AuthorizeWithGoogleUseCase(
     private val context: ComponentActivity,
@@ -48,11 +45,11 @@ class AuthorizeWithGoogleUseCase(
 
             val accessToken = authorizationResult.accessToken
             if (accessToken == null) {
-                log.error { "Token was null " }
+                Napier.e(message = "Token was null")
             }
             return accessToken
         } catch (e: Throwable) {
-            log.error { "Encountered error $e" }
+            Napier.e(message = "Error in authorization result", throwable = e)
             null
         }
     }
@@ -66,7 +63,7 @@ class AuthorizeWithGoogleUseCase(
                     .getAuthorizationResultFromIntent(intent)
             val authorizationCode = authorizationResult.serverAuthCode
             if (authorizationCode == null) {
-                log.error { "No authorization code " }
+                Napier.e("No authorization code")
             }
 
             authorizationCode
@@ -102,7 +99,7 @@ class AuthorizeWithGoogleUseCase(
                     if (pendingIntent == null) {
                         // Check if there's a token
                         if (it.accessToken != null) {
-                            continueWithResult(AuthResult.Granted(it.accessToken!!,  null))
+                            continueWithResult(AuthResult.Granted(it.accessToken!!, null))
                         } else {
                             clearIdentityState()
                             continueWithError("intent was null")
@@ -115,7 +112,7 @@ class AuthorizeWithGoogleUseCase(
                         )
                     }
                 }.addOnFailureListener {
-                    log.error { "Auth request failed with $it" }
+                    Napier.e(message = "Auth request from user failed.", throwable = it)
                     continueWithException(it)
                 }
         }
