@@ -1,5 +1,15 @@
 package io.kusius.letterbox.domain.auth
 
+internal object Scopes {
+    val values: List<String> =
+        listOf(
+            "https://www.googleapis.com/auth/gmail.readonly",
+            "https://www.googleapis.com/auth/gmail.modify",
+        )
+
+    const val VERSION = 2
+}
+
 sealed interface AuthResult {
     class Granted(
         val accessToken: String,

@@ -40,11 +40,6 @@ private class DesktopAuthenticator private constructor(
             }
 
             val clientSecrets = loadClientSecrets()
-            val scopes =
-                listOf(
-                    "https://www.googleapis.com/auth/gmail.readonly",
-                    "https://www.googleapis.com/auth/gmail.modify",
-                )
 
             val flow =
                 GoogleAuthorizationCodeFlow
@@ -52,7 +47,7 @@ private class DesktopAuthenticator private constructor(
                         NetHttpTransport(),
                         jsonFactory,
                         clientSecrets,
-                        scopes,
+                        Scopes.values,
                     ).setDataStoreFactory(FileDataStoreFactory(File(tokenStorePath)))
                     .setAccessType("offline")
                     .setApprovalPrompt("force")
