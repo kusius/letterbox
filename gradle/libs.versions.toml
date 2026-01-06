@@ -21,7 +21,6 @@ junit = "4.13.2"
 kotlin = "2.2.21"
 kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.9.0"
-kotlin-logging = "7.0.7"
 material3-adaptive = "1.2.0"
 playsServicesAuth = "21.4.0"
 dataStore = "1.1.7"
@@ -65,7 +64,6 @@ androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "d
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "dataStore" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playsServicesAuth" }
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlin-logging" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
