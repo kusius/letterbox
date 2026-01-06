@@ -30,8 +30,24 @@ class MailRemoteLocalDataSource(
             .stream(StoreReadRequest.cached(key = FullMailsKey.AllUnread, refresh = true))
             .mapNotNull { response ->
                 when (response) {
-                    is StoreReadResponse.Data<List<Mail>> -> Result.success(response.value)
-                    else -> null
+                    is StoreReadResponse.Data<List<Mail>> -> {
+                        Result.success(response.value)
+                    }
+
+                    is StoreReadResponse.Error -> {
+                        response.asFailureOrNull().also {
+                            it?.onFailure { error ->
+                                Napier.e(
+                                    message = "getFullUnreadEmails error",
+                                    throwable = error,
+                                )
+                            }
+                        }
+                    }
+
+                    else -> {
+                        null
+                    }
                 }
             }
 
@@ -57,9 +73,15 @@ class MailRemoteLocalDataSource(
                         }
                     }
 
-                    is StoreReadResponse.Error.Exception -> {
-                        Napier.e("Error.", throwable = response.error)
-                        Result.failure(response.error)
+                    is StoreReadResponse.Error -> {
+                        response.asFailureOrNull().also {
+                            it?.onFailure { error ->
+                                Napier.e(
+                                    message = "getFullUnreadEmails error",
+                                    throwable = error,
+                                )
+                            }
+                        }
                     }
 
                     //               is StoreReadResponse.Error.Custom<*> -> TODO()
@@ -107,7 +129,7 @@ class MailRemoteLocalDataSource(
                 ),
             )
         } catch (e: Throwable) {
-            Napier.e("Could not update red status.", e)
+            Napier.e("Could not update read status.", e)
         }
     }
 
@@ -147,6 +169,17 @@ class MailRemoteLocalDataSource(
                         }
                     }
 
+                    is StoreReadResponse.Error -> {
+                        response.asFailureOrNull().also {
+                            it?.onFailure { error ->
+                                Napier.e(
+                                    message = "getFullUnreadEmails error",
+                                    throwable = error,
+                                )
+                            }
+                        }
+                    }
+
                     //              is StoreReadResponse.Error.Custom<*> -> TODO()
                     //              is StoreReadResponse.Error.Exception -> TODO()
                     //              is StoreReadResponse.Error.Message -> TODO()
@@ -159,3 +192,10 @@ class MailRemoteLocalDataSource(
                 }
             }
 }
+
+private fun StoreReadResponse.Error.asFailureOrNull(): Result<Nothing>? =
+    when (this) {
+        is StoreReadResponse.Error.Custom<*> -> Result.failure(Throwable(message = "Custom exception ... "))
+        is StoreReadResponse.Error.Exception -> Result.failure(this.error)
+        is StoreReadResponse.Error.Message -> Result.failure(Throwable(this.message))
+    }

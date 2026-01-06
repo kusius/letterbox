@@ -2,17 +2,24 @@ package io.kusius.letterbox
 
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
+import org.koin.mp.KoinPlatform.getKoin
 import java.io.File
 
 class JVMPlatform : Platform {
     override val name: String = "Java ${System.getProperty("java.version")}"
 
-    override fun debugBuild() {
+    override fun setupLogging() {
+        Napier.base(DebugAntilog())
+        Napier.base(getKoin().get())
     }
 }
 
 enum class DesktopOS {
-    WINDOWS, MACOS, LINUX, UNKNOWN;
+    WINDOWS,
+    MACOS,
+    LINUX,
+    UNKNOWN,
+    ;
 
     companion object {
         fun current(): DesktopOS {
@@ -28,21 +35,26 @@ enum class DesktopOS {
 }
 
 fun getAppDir(): File {
-    val basePath = when(DesktopOS.current()) {
-        DesktopOS.MACOS -> {
-            "${System.getProperty("user.home")}/Library/Application Support"
+    val basePath =
+        when (DesktopOS.current()) {
+            DesktopOS.MACOS -> {
+                "${System.getProperty("user.home")}/Library/Application Support"
+            }
+
+            DesktopOS.WINDOWS -> {
+                System.getenv("APPDATA")
+            }
+
+            DesktopOS.LINUX -> {
+                "${System.getProperty("user.home")}/.config"
+            }
+
+            DesktopOS.UNKNOWN -> {
+                System.getProperty("java.io.tmpdir")
+            }
         }
-        DesktopOS.WINDOWS -> {
-            System.getenv("APPDATA")
-        }
-        DesktopOS.LINUX -> {
-            "${System.getProperty("user.home")}/.config"
-        }
-        DesktopOS.UNKNOWN -> {
-            System.getProperty("java.io.tmpdir")
-        }
-    }
 
     return File(basePath).resolve("letterbox")
 }
+
 actual fun getPlatform(): Platform = JVMPlatform()

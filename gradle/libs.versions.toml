@@ -39,6 +39,9 @@ buildConfig ="6.0.7"
 googleServices="4.4.4"
 kottie = "2.2.0"
 snizzors = "1.0.0-cmp1.9"
+firebaseKotlin = "2.4.0" # KMP firebase wrapper
+firebaseAndroidBom = "34.7.0" # official android firebase bom
+firebaseCrashlyticsPlugin = "3.0.6"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -93,6 +96,15 @@ jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
 jna-platform = { module = "net.java.dev.jna:jna-platform", version.ref = "jna" }
 kottie = { module = "io.github.ismai117:kottie", version.ref = "kottie" }
 snizzors = { module = "com.infiniteretry.snizzors:snizzors", version.ref = "snizzors"}
+firebase-kotlin-crashlytics = { module = "dev.gitlive:firebase-crashlytics", version.ref = "firebaseKotlin" }
+firebase-kotlin-analytics = { module = "dev.gitlive:firebase-analytics", version.ref = "firebaseKotlin" }
+firebase-kotlin-app = { module = "dev.gitlive:firebase-app", version.ref = "firebaseKotlin" }
+firebase-kotlin-common = { module = "dev.gitlive:firebase-common", version.ref = "firebaseKotlin" }
+
+# Pure android deps
+firebase-android-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseAndroidBom"}
+firebase-android-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-android-crashlytics = { module = "com.google.firebase:firebase-crashlytics"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -106,3 +118,4 @@ sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint"}
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "googleServices"}
+firebaseCrashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
