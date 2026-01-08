@@ -18,6 +18,8 @@ import io.kusius.letterbox.data.persistence.toMail
 import io.kusius.letterbox.model.Mail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import org.mobilenativefoundation.store.store5.Converter
 import org.mobilenativefoundation.store.store5.Fetcher
@@ -33,14 +35,29 @@ sealed interface FullMailsKey {
     object AllUnread : FullMailsKey
 }
 
+sealed interface ProgressiveResult<T> {
+    data class Progress(
+        val progress: Float,
+    ) : ProgressiveResult<Nothing>
+
+    data class Result<T>(
+        val value: kotlin.Result<T>,
+    ) : ProgressiveResult<T>
+}
+
 class FullMailsStore(
     private val delegate: FullMailsStoreFactory = FullMailsStoreFactory(),
+    val progress: StateFlow<ProgressiveResult.Progress> = delegate.progress,
 ) : Store<FullMailsKey, Output> by delegate.create()
 
 class FullMailsStoreFactory(
     val client: KtorClient = KtorProvider.getInstance().client,
     val database: Database = DatabaseProvider.getInstance().database,
 ) {
+    private val _progress = MutableStateFlow(ProgressiveResult.Progress(0f))
+    val progress: StateFlow<ProgressiveResult.Progress>
+        get() = _progress
+
     fun create(): Store<FullMailsKey, Output> =
         StoreBuilder
             .from(
@@ -76,11 +93,14 @@ class FullMailsStoreFactory(
                         }
 
                     val networkMails =
-                        idsToFetch.mapNotNull { id ->
+                        idsToFetch.mapIndexedNotNull { index, id ->
                             val response: Result<NetworkMail> =
                                 client.getResource(ApiMailRefs.ApiMail(id = id)) {
                                     parameter("format", "full")
                                 }
+
+                            _progress.value =
+                                ProgressiveResult.Progress((index + 1f) / idsToFetch.size)
 
                             response.fold(
                                 onSuccess = { networkMail ->

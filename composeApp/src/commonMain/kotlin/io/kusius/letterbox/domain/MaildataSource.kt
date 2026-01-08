@@ -1,5 +1,6 @@
 package io.kusius.letterbox.domain
 
+import io.kusius.letterbox.data.stores.ProgressiveResult
 import io.kusius.letterbox.model.Mail
 import io.kusius.letterbox.model.MailSummary
 import kotlinx.coroutines.flow.Flow
@@ -7,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface MailDataSource {
     suspend fun getEmails(page: Int = 0): Flow<Result<List<MailSummary>>>
 
-    suspend fun getFullUnreadMails(): Flow<Result<List<Mail>>>
+    suspend fun getFullUnreadMails(): Flow<ProgressiveResult<List<Mail>>>
 
     suspend fun refreshMails()
 

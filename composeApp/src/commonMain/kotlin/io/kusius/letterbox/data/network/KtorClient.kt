@@ -35,15 +35,11 @@ import io.kusius.letterbox.domain.auth.Scopes
 import kotlinx.serialization.json.Json
 
 sealed interface ApiResult<T> {
-    class Success<T>(
-        data: T,
+    class NetworkResult<T>(
+        result: Result<T>,
     ) : ApiResult<T>
 
-    object Unauthorized : ApiResult<Nothing>
-
-    class GenericError(
-        e: Throwable,
-    ) : ApiResult<Nothing>
+    object NoNetwork : ApiResult<Nothing>
 }
 
 private const val GOOGLE_APIS = "gmail.googleapis.com"
@@ -244,10 +240,11 @@ class KtorClient(
     ): Result<R> {
         val response = client.get(resource) { builder() }
         return if (response.status.isSuccess()) {
-            Result.success(response.body())
+            runCatching { response.body<R>() }
         } else {
-            Napier.e("Error response: ${response.bodyAsText()}")
-            Result.failure(Exception("Error ${response.status}: ${response.bodyAsText()}"))
+            val bodyText = response.bodyAsText()
+            Napier.e("Error response: $bodyText")
+            Result.failure(Exception("Error ${response.status}: $bodyText"))
         }
     }
 
@@ -257,7 +254,7 @@ class KtorClient(
     ): Result<R> {
         val response = client.post(resource) { builder() }
         return if (response.status.isSuccess()) {
-            Result.success(response.body())
+            runCatching { response.body() }
         } else {
             Napier.e("Error response: ${response.bodyAsText()}")
             Result.failure(Exception("Error ${response.status}: ${response.bodyAsText()}"))

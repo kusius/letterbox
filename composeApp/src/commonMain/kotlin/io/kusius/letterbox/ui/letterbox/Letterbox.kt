@@ -92,7 +92,10 @@ fun LetterboxScreenRoot(
         }
 
         is LetterboxUiState.Loading -> {
-            Loading(modifier = modifier.fillMaxSize())
+            Loading(
+                progress = state.progress,
+                modifier = modifier.fillMaxSize()
+            )
         }
 
         is LetterboxUiState.Error -> {
