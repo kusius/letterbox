@@ -35,15 +35,11 @@ import io.kusius.letterbox.domain.auth.Scopes
 import kotlinx.serialization.json.Json
 
 sealed interface ApiResult<T> {
-    class Success<T>(
-        data: T,
+    class NetworkResult<T>(
+        result: Result<T>,
     ) : ApiResult<T>
 
-    object Unauthorized : ApiResult<Nothing>
-
-    class GenericError(
-        e: Throwable,
-    ) : ApiResult<Nothing>
+    object NoNetwork : ApiResult<Nothing>
 }
 
 private const val GOOGLE_APIS = "gmail.googleapis.com"
@@ -134,12 +130,14 @@ class KtorClient(
                         val result =
                             client
                                 .submitForm(
-                                    url = "https://accounts.google.com/o/oauth2/token",
+                                    url = "https://oauth2.googleapis.com/token",
                                     formParameters =
                                         parameters {
                                             append("grant_type", "refresh_token")
                                             append("client_id", Keys.clientId())
-                                            append("client_secret", Keys.clientSecret())
+                                            Keys.clientSecret().takeIf { it.isNotBlank() }?.let { secret ->
+                                                append("client_secret", secret)
+                                            }
                                             append("refresh_token", oldTokens?.refreshToken ?: "")
                                         },
                                 )
@@ -220,6 +218,7 @@ class KtorClient(
     }
 
     private suspend fun exchangeCodeForTokens(code: String): BearerTokens {
+        Napier.d("Exchanging code for tokens")
         val response =
             client.submitForm(
                 url = TOKEN_URI,
@@ -244,10 +243,11 @@ class KtorClient(
     ): Result<R> {
         val response = client.get(resource) { builder() }
         return if (response.status.isSuccess()) {
-            Result.success(response.body())
+            runCatching { response.body<R>() }
         } else {
-            Napier.e("Error response: ${response.bodyAsText()}")
-            Result.failure(Exception("Error ${response.status}: ${response.bodyAsText()}"))
+            val bodyText = response.bodyAsText()
+            Napier.e("Error response: $bodyText")
+            Result.failure(Exception("Error ${response.status}: $bodyText"))
         }
     }
 
@@ -257,7 +257,7 @@ class KtorClient(
     ): Result<R> {
         val response = client.post(resource) { builder() }
         return if (response.status.isSuccess()) {
-            Result.success(response.body())
+            runCatching { response.body() }
         } else {
             Napier.e("Error response: ${response.bodyAsText()}")
             Result.failure(Exception("Error ${response.status}: ${response.bodyAsText()}"))

@@ -43,13 +43,9 @@ internal class RefreshMailsUseCase(
 
         do {
             val result: Result<HistoryList> =
-                try {
-                    client.getResource(ApiHistory()) {
-                        parameter("startHistoryId", lastHistoryId)
-                        if (pageToken != null) parameter("pageToken", pageToken)
-                    }
-                } catch (e: Throwable) {
-                    throw e
+                client.getResource(ApiHistory()) {
+                    parameter("startHistoryId", lastHistoryId)
+                    if (pageToken != null) parameter("pageToken", pageToken)
                 }
 
             history = result.getOrElse { return fullRefresh() }

@@ -3,6 +3,7 @@ package io.kusius.letterbox.ui.letterbox
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
+import io.kusius.letterbox.data.stores.ProgressiveResult
 import io.kusius.letterbox.domain.MailDataSource
 import io.kusius.letterbox.model.Mail
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,9 +17,12 @@ import kotlinx.coroutines.launch
 sealed interface LetterboxUiState {
     data class Data(
         val data: List<Mail>,
+        val loadingMoreProgress: Float? = null,
     ) : LetterboxUiState
 
-    object Loading : LetterboxUiState
+    data class Loading(
+        val progress: Float,
+    ) : LetterboxUiState
 
     data class Error(
         val error: Throwable,
@@ -40,15 +44,10 @@ sealed class LetterboxAction(
 class LetterboxViewModel(
     private val dataSource: MailDataSource,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<LetterboxUiState>(LetterboxUiState.Loading)
+    private val _uiState = MutableStateFlow<LetterboxUiState>(LetterboxUiState.Loading(0f))
     val uiState: StateFlow<LetterboxUiState> =
         _uiState
-            .map {
-                if (it is LetterboxUiState.Data) {
-                    Napier.d("${it.data.size} mails")
-                }
-                it
-            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), LetterboxUiState.Loading)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), LetterboxUiState.Loading(0f))
 
     init {
         viewModelScope.launch {
@@ -67,14 +66,38 @@ class LetterboxViewModel(
 
     private suspend fun loadData() {
         dataSource.getFullUnreadMails().collect { result ->
+            val currentState = _uiState.value
             _uiState.update {
-                result.fold(
-                    onSuccess = {
-                        Napier.d("Emitting ${it.size} unread mails")
-                        LetterboxUiState.Data(data = it)
-                    },
-                    onFailure = { LetterboxUiState.Error(error = it) },
-                )
+                when (result) {
+                    is ProgressiveResult.Progress -> {
+                        when (currentState) {
+                            // Show currently cached mails and loading indicator that they are refreshing.
+                            is LetterboxUiState.Data -> {
+                                currentState.copy(
+                                    loadingMoreProgress =
+                                        result.progress.takeIf {
+                                            it > 0f && it < 1f
+                                        },
+                                )
+                            }
+
+                            // Otherwise propagate the loading as normal
+                            else -> {
+                                LetterboxUiState.Loading(progress = result.progress)
+                            }
+                        }
+                    }
+
+                    is ProgressiveResult.Result<List<Mail>> -> {
+                        result.value.fold(
+                            onSuccess = {
+                                Napier.d("Emitting ${it.size} unread mails")
+                                LetterboxUiState.Data(data = it)
+                            },
+                            onFailure = { LetterboxUiState.Error(error = it) },
+                        )
+                    }
+                }
             }
         }
     }
