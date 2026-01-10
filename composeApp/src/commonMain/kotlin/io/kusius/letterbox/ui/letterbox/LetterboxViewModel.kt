@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 sealed interface LetterboxUiState {
     data class Data(
         val data: List<Mail>,
+        val loadingMoreProgress: Float? = null,
     ) : LetterboxUiState
 
     data class Loading(
@@ -65,10 +66,26 @@ class LetterboxViewModel(
 
     private suspend fun loadData() {
         dataSource.getFullUnreadMails().collect { result ->
+            val currentState = _uiState.value
             _uiState.update {
                 when (result) {
                     is ProgressiveResult.Progress -> {
-                        LetterboxUiState.Loading(progress = result.progress)
+                        when (currentState) {
+                            // Show currently cached mails and loading indicator that they are refreshing.
+                            is LetterboxUiState.Data -> {
+                                currentState.copy(
+                                    loadingMoreProgress =
+                                        result.progress.takeIf {
+                                            it > 0f && it < 1f
+                                        },
+                                )
+                            }
+
+                            // Otherwise propagate the loading as normal
+                            else -> {
+                                LetterboxUiState.Loading(progress = result.progress)
+                            }
+                        }
                     }
 
                     is ProgressiveResult.Result<List<Mail>> -> {

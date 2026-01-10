@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -56,6 +55,7 @@ import io.kusius.letterbox.model.MimeTypes
 import io.kusius.letterbox.ui.NavigationRoute
 import io.kusius.letterbox.ui.common.Error
 import io.kusius.letterbox.ui.common.Loading
+import io.kusius.letterbox.ui.common.LoadingWithAnimation
 import io.kusius.letterbox.ui.common.MailItem
 import io.kusius.letterbox.ui.common.cardstack.lazy.LazyCardStack
 import io.kusius.letterbox.ui.common.cardstack.lazy.itemsIndexed
@@ -84,17 +84,29 @@ fun LetterboxScreenRoot(
 
     when (val state = uiState.value) {
         is LetterboxUiState.Data -> {
-            LetterboxScreen(
-                data = state.data,
+            Box(
                 modifier = modifier.fillMaxSize(),
-                onAction = viewModel::onAction,
-            )
+            ) {
+                LetterboxScreen(
+                    data = state.data,
+                    onAction = viewModel::onAction,
+                )
+                if (state.loadingMoreProgress != null) {
+                    Loading(
+                        progress = state.loadingMoreProgress,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.BottomCenter),
+                    )
+                }
+            }
         }
 
         is LetterboxUiState.Loading -> {
-            Loading(
+            LoadingWithAnimation(
                 progress = state.progress,
-                modifier = modifier.fillMaxSize()
+                modifier = modifier.fillMaxSize(),
             )
         }
 
@@ -149,7 +161,7 @@ private fun LetterboxScreen(
     val expandedStates = remember { mutableStateMapOf<String, Boolean>() }
 
     BoxWithConstraints(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier,
         contentAlignment = Alignment.Center,
     ) {
         val maxW = maxWidth - 4.dp

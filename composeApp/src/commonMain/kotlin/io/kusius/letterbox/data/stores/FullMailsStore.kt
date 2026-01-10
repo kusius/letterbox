@@ -18,6 +18,7 @@ import io.kusius.letterbox.data.persistence.toMail
 import io.kusius.letterbox.model.Mail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -36,9 +37,9 @@ sealed interface FullMailsKey {
 }
 
 sealed interface ProgressiveResult<T> {
-    data class Progress(
+    data class Progress<T>(
         val progress: Float,
-    ) : ProgressiveResult<Nothing>
+    ) : ProgressiveResult<T>
 
     data class Result<T>(
         val value: kotlin.Result<T>,
@@ -47,15 +48,15 @@ sealed interface ProgressiveResult<T> {
 
 class FullMailsStore(
     private val delegate: FullMailsStoreFactory = FullMailsStoreFactory(),
-    val progress: StateFlow<ProgressiveResult.Progress> = delegate.progress,
+    val progress: Flow<ProgressiveResult.Progress<Output>> = delegate.progress,
 ) : Store<FullMailsKey, Output> by delegate.create()
 
 class FullMailsStoreFactory(
     val client: KtorClient = KtorProvider.getInstance().client,
     val database: Database = DatabaseProvider.getInstance().database,
 ) {
-    private val _progress = MutableStateFlow(ProgressiveResult.Progress(0f))
-    val progress: StateFlow<ProgressiveResult.Progress>
+    private val _progress = MutableStateFlow(ProgressiveResult.Progress<Output>(0f))
+    val progress: StateFlow<ProgressiveResult.Progress<Output>>
         get() = _progress
 
     fun create(): Store<FullMailsKey, Output> =

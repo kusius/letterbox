@@ -130,12 +130,14 @@ class KtorClient(
                         val result =
                             client
                                 .submitForm(
-                                    url = "https://accounts.google.com/o/oauth2/token",
+                                    url = "https://oauth2.googleapis.com/token",
                                     formParameters =
                                         parameters {
                                             append("grant_type", "refresh_token")
                                             append("client_id", Keys.clientId())
-                                            append("client_secret", Keys.clientSecret())
+                                            Keys.clientSecret().takeIf { it.isNotBlank() }?.let { secret ->
+                                                append("client_secret", secret)
+                                            }
                                             append("refresh_token", oldTokens?.refreshToken ?: "")
                                         },
                                 )
@@ -216,6 +218,7 @@ class KtorClient(
     }
 
     private suspend fun exchangeCodeForTokens(code: String): BearerTokens {
+        Napier.d("Exchanging code for tokens")
         val response =
             client.submitForm(
                 url = TOKEN_URI,

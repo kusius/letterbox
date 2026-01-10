@@ -55,7 +55,7 @@ class MailRemoteLocalDataSource(
                     }
                 }.map { ProgressiveResult.Result(value = it) },
             fullMailsStore.progress,
-        ) as Flow<ProgressiveResult<List<Mail>>>
+        )
 
     override suspend fun getEmails(page: Int): Flow<Result<List<MailSummary>>> =
         multiMailStore
