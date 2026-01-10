@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.kusius.letterbox.model.MailSummary.Companion.randomMailSummary
 import io.kusius.letterbox.ui.NavigationRoute
-import io.kusius.letterbox.ui.common.Loading
+import io.kusius.letterbox.ui.common.LoadingWithAnimation
 import io.kusius.letterbox.ui.theme.AppTheme
 import kotlinx.serialization.Serializable
 import letterbox.composeapp.generated.resources.Res
@@ -57,7 +57,7 @@ fun SummaryScreenRoot(
         }
 
         is MailSummaryUiState.Loading -> {
-            Loading(modifier = modifier.fillMaxSize())
+            LoadingWithAnimation(modifier = modifier.fillMaxSize())
         }
 
         is MailSummaryUiState.Error -> {

@@ -9,11 +9,16 @@ import io.kusius.letterbox.data.stores.MailAction
 import io.kusius.letterbox.data.stores.MailStore
 import io.kusius.letterbox.data.stores.MailsAction
 import io.kusius.letterbox.data.stores.MailsStore
+import io.kusius.letterbox.data.stores.ProgressiveResult
 import io.kusius.letterbox.domain.MailDataSource
 import io.kusius.letterbox.model.Mail
 import io.kusius.letterbox.model.MailSummary
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flattenConcat
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.merge
 import org.mobilenativefoundation.store.core5.ExperimentalStoreApi
 import org.mobilenativefoundation.store.store5.StoreReadRequest
 import org.mobilenativefoundation.store.store5.StoreReadResponse
@@ -25,31 +30,32 @@ class MailRemoteLocalDataSource(
     val singleMailStore: MailStore,
     val fullMailsStore: FullMailsStore,
 ) : MailDataSource {
-    override suspend fun getFullUnreadMails(): Flow<Result<List<Mail>>> =
-        fullMailsStore
-            .stream(StoreReadRequest.cached(key = FullMailsKey.AllUnread, refresh = true))
-            .mapNotNull { response ->
-                when (response) {
-                    is StoreReadResponse.Data<List<Mail>> -> {
-                        Result.success(response.value)
-                    }
+    override suspend fun getFullUnreadMails(): Flow<ProgressiveResult<List<Mail>>> =
+        merge(
+            fullMailsStore
+                .stream(StoreReadRequest.cached(key = FullMailsKey.AllUnread, refresh = true))
+                .mapNotNull { response ->
+                    when (response) {
+                        is StoreReadResponse.Data<List<Mail>> -> {
+                            Result.success(response.value)
+                        }
 
-                    is StoreReadResponse.Error -> {
-                        response.asFailureOrNull().also {
-                            it?.onFailure { error ->
+                        is StoreReadResponse.Error -> {
+                            response.asFailureOrNull()?.onFailure { error ->
                                 Napier.e(
                                     message = "getFullUnreadEmails error",
                                     throwable = error,
                                 )
                             }
                         }
-                    }
 
-                    else -> {
-                        null
+                        else -> {
+                            null
+                        }
                     }
-                }
-            }
+                }.map { ProgressiveResult.Result(value = it) },
+            fullMailsStore.progress,
+        )
 
     override suspend fun getEmails(page: Int): Flow<Result<List<MailSummary>>> =
         multiMailStore
@@ -74,13 +80,11 @@ class MailRemoteLocalDataSource(
                     }
 
                     is StoreReadResponse.Error -> {
-                        response.asFailureOrNull().also {
-                            it?.onFailure { error ->
-                                Napier.e(
-                                    message = "getFullUnreadEmails error",
-                                    throwable = error,
-                                )
-                            }
+                        response.asFailureOrNull()?.onFailure { error ->
+                            Napier.e(
+                                message = "getEmails error",
+                                throwable = error,
+                            )
                         }
                     }
 
@@ -156,8 +160,7 @@ class MailRemoteLocalDataSource(
             ).mapNotNull { response ->
                 when (response) {
                     is StoreReadResponse.Data<MailAction<Mail>> -> {
-                        val action = response.value
-                        when (action) {
+                        when (val action = response.value) {
                             is MailAction.Add<Mail> -> {
                                 Result.success(action.mail)
                             }
@@ -170,13 +173,11 @@ class MailRemoteLocalDataSource(
                     }
 
                     is StoreReadResponse.Error -> {
-                        response.asFailureOrNull().also {
-                            it?.onFailure { error ->
-                                Napier.e(
-                                    message = "getFullUnreadEmails error",
-                                    throwable = error,
-                                )
-                            }
+                        response.asFailureOrNull()?.onFailure { error ->
+                            Napier.e(
+                                message = "getMail error",
+                                throwable = error,
+                            )
                         }
                     }
 
