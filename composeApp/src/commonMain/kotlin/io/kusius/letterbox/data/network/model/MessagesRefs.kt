@@ -19,7 +19,7 @@ data class MessagesRefs(
 
 @Serializable
 data class MessagesRefsSimple(
-    val messages: List<MessageRef>,
+    val messages: List<MessageRef>?,
 ) : ApiModel
 
 @Serializable
