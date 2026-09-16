@@ -151,9 +151,7 @@ class FullMailsStoreFactory(
                                         emptyList<Mail>()
                                     }
                                 } else {
-                                    rows
-                                        .takeIf { it.all { mail -> mail.raw != null } }
-                                        ?.map(MailEntity::toMail)
+                                    rows.map(MailEntity::toMail)
                                 }
                             }
                     }
