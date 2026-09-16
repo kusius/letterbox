@@ -240,27 +240,34 @@ class KtorClient(
     internal suspend inline fun <reified T : Any, reified R : ApiModel> getResource(
         resource: T,
         crossinline builder: HttpRequestBuilder.() -> Unit = {},
-    ): Result<R> {
-        val response = client.get(resource) { builder() }
-        return if (response.status.isSuccess()) {
-            runCatching { response.body<R>() }
-        } else {
-            val bodyText = response.bodyAsText()
-            Napier.e("Error response: $bodyText")
-            Result.failure(Exception("Error ${response.status}: $bodyText"))
-        }
-    }
+    ): Result<R> = call(CallType.Get, resource, builder)
 
     internal suspend inline fun <reified T : Any, reified R : ApiModel> postResource(
         resource: T,
         crossinline builder: HttpRequestBuilder.() -> Unit = {},
+    ): Result<R> = call(CallType.Post, resource, builder)
+
+    private suspend inline fun <reified T : Any, reified R : ApiModel> call(
+        callType: CallType,
+        resource: T,
+        crossinline builder: HttpRequestBuilder.() -> Unit = {},
     ): Result<R> {
-        val response = client.post(resource) { builder() }
+        val response =
+            when (callType) {
+                CallType.Get -> client.get(resource) { builder() }
+                CallType.Post -> client.post(resource) { builder() }
+            }
         return if (response.status.isSuccess()) {
             runCatching { response.body() }
         } else {
             Napier.e("Error response: ${response.bodyAsText()}")
             Result.failure(Exception("Error ${response.status}: ${response.bodyAsText()}"))
         }
+    }
+
+    internal sealed interface CallType {
+        object Get : CallType
+
+        object Post : CallType
     }
 }
