@@ -74,13 +74,17 @@ class FullMailsStoreFactory(
                     val response: Result<MessagesRefsSimple> =
                         client.getResource(ApiMailRefs()) {
                             parameter("labelIds", LABEL_UNREAD)
-                            parameter("labelIds", LABEL_INBOX)
+                            parameter("includeSpamTrash", false)
                         }
                     val unreadRefs =
                         response.getOrElse {
-                            Napier.e("Could not get response", it)
+                            Napier.e("Could not get all unread messages", it)
                             throw it
                         }
+
+                    if (unreadRefs.messages == null) {
+                        return@of emptyList()
+                    }
 
                     val idsToFetch =
                         unreadRefs.messages.mapNotNull {
@@ -108,7 +112,7 @@ class FullMailsStoreFactory(
                                     networkMail
                                 },
                                 onFailure = {
-                                    Napier.d("Could not fetch full mail", it)
+                                    Napier.e("Could not fetch full mail", it)
                                     null
                                 },
                             )
